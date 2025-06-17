@@ -1,45 +1,54 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
-import { useApp } from '../context/AppContext';
-import { UserData } from '../types';
-import { predictHealth } from '../services/api';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { useApp } from "../context/AppContext";
+import { UserData } from "../types";
+import { predictHealth } from "../services/api";
 
 const UserForm: React.FC = () => {
   const { setCurrentPage, setUserData, setHealthMetrics } = useApp();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    gender: 'male' as 'male' | 'female' | 'other',
-    systolic: '',
-    diastolic: '',
-    cholesterol: '',
+    name: "",
+    age: "",
+    gender: "male" as "male" | "female" | "other",
+    systolic: "",
+    diastolic: "",
+    cholesterol: "",
     heartConditions: [] as string[],
     // New fields for API
-    everMarried: 'Yes' as 'Yes' | 'No',
-    workType: 'Private' as 'Private' | 'Self-employed' | 'Govt_job' | 'children' | 'Never_worked',
-    residenceType: 'Urban' as 'Urban' | 'Rural',
-    avgGlucoseLevel: '',
-    bmi: '',
-    smokingStatus: 'never smoked' as 'formerly smoked' | 'never smoked' | 'smokes' | 'Unknown'
+    everMarried: "Yes" as "Yes" | "No",
+    workType: "Private" as
+      | "Private"
+      | "Self-employed"
+      | "Govt_job"
+      | "children"
+      | "Never_worked",
+    residenceType: "Urban" as "Urban" | "Rural",
+    avgGlucoseLevel: "",
+    bmi: "",
+    smokingStatus: "never smoked" as
+      | "formerly smoked"
+      | "never smoked"
+      | "smokes"
+      | "Unknown",
   });
 
   const heartConditions = [
-    'Hypertension',
-    'Arrhythmia',
-    'Heart Disease',
-    'Diabetes',
-    'High Cholesterol',
-    'Family History'
+    "Hypertension",
+    "Arrhythmia",
+    "Heart Disease",
+    "Diabetes",
+    "High Cholesterol",
+    "Family History",
   ];
 
   const handleConditionToggle = (condition: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       heartConditions: prev.heartConditions.includes(condition)
-        ? prev.heartConditions.filter(c => c !== condition)
-        : [...prev.heartConditions, condition]
+        ? prev.heartConditions.filter((c) => c !== condition)
+        : [...prev.heartConditions, condition],
     }));
   };
 
@@ -57,7 +66,8 @@ const UserForm: React.FC = () => {
 
     // Use API response for risk calculation
     const strokeRisk = apiResponse.probability || Math.random() * 100;
-    const prediction = apiResponse.prediction || (Math.random() > 0.7 ? 1 : 0);
+    const prediction =
+      apiResponse.probability > 50 ? 1 : 0 || (Math.random() > 0.7 ? 1 : 0);
 
     const getHealthRecommendation = (risk: number, prediction: number) => {
       if (prediction === 1 || risk > 70) {
@@ -75,7 +85,7 @@ const UserForm: React.FC = () => {
       riskScore: Math.round(strokeRisk),
       strokePrediction: prediction,
       healthRecommendation: getHealthRecommendation(strokeRisk, prediction),
-      ecgData
+      ecgData,
     };
   };
 
@@ -89,7 +99,7 @@ const UserForm: React.FC = () => {
       gender: formData.gender,
       bloodPressure: {
         systolic: parseInt(formData.systolic),
-        diastolic: parseInt(formData.diastolic)
+        diastolic: parseInt(formData.diastolic),
       },
       cholesterol: parseInt(formData.cholesterol),
       heartConditions: formData.heartConditions,
@@ -98,29 +108,30 @@ const UserForm: React.FC = () => {
       residenceType: formData.residenceType,
       avgGlucoseLevel: parseFloat(formData.avgGlucoseLevel),
       bmi: parseFloat(formData.bmi),
-      smokingStatus: formData.smokingStatus
+      smokingStatus: formData.smokingStatus,
     };
 
     try {
       // Call the prediction API
       const apiResponse = await predictHealth(userData);
+      console.log("apiResponse", apiResponse);
       const healthMetrics = generateMockHealthData(userData, apiResponse);
-      console.log("Health Metrics:",healthMetrics);
-      
+      console.log("Health Metrics:", healthMetrics);
+
       // Store in localStorage for session persistence
-      localStorage.setItem('userData', JSON.stringify(userData));
-      localStorage.setItem('healthMetrics', JSON.stringify(healthMetrics));
-      
+      localStorage.setItem("userData", JSON.stringify(userData));
+      localStorage.setItem("healthMetrics", JSON.stringify(healthMetrics));
+
       setUserData(userData);
       setHealthMetrics(healthMetrics);
-      setCurrentPage('dashboard');
+      setCurrentPage("dashboard");
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
       // Fallback to mock data
       const healthMetrics = generateMockHealthData(userData, {});
       setUserData(userData);
       setHealthMetrics(healthMetrics);
-      setCurrentPage('dashboard');
+      setCurrentPage("dashboard");
     } finally {
       setIsLoading(false);
     }
@@ -139,7 +150,8 @@ const UserForm: React.FC = () => {
             Analyzing Your Health Data
           </h2>
           <p className="text-gray-600 dark:text-gray-300">
-            Our AI is processing your information to provide personalized insights...
+            Our AI is processing your information to provide personalized
+            insights...
           </p>
         </motion.div>
       </div>
@@ -156,7 +168,7 @@ const UserForm: React.FC = () => {
         >
           <div className="mb-8">
             <button
-              onClick={() => setCurrentPage('landing')}
+              onClick={() => setCurrentPage("landing")}
               className="flex items-center text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="h-5 w-5 mr-2" />
@@ -169,14 +181,17 @@ const UserForm: React.FC = () => {
               Comprehensive Health Assessment
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
-              Please provide your health information for AI-powered stroke risk analysis
+              Please provide your health information for AI-powered stroke risk
+              analysis
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
             <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Basic Information</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Basic Information
+              </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -186,7 +201,9 @@ const UserForm: React.FC = () => {
                     type="text"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, name: e.target.value }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter your full name"
                   />
@@ -202,7 +219,9 @@ const UserForm: React.FC = () => {
                     min="18"
                     max="120"
                     value={formData.age}
-                    onChange={(e) => setFormData(prev => ({ ...prev, age: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, age: e.target.value }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter your age"
                   />
@@ -214,7 +233,12 @@ const UserForm: React.FC = () => {
                   </label>
                   <select
                     value={formData.gender}
-                    onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value as any }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        gender: e.target.value as any,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="male">Male</option>
@@ -229,7 +253,12 @@ const UserForm: React.FC = () => {
                   </label>
                   <select
                     value={formData.everMarried}
-                    onChange={(e) => setFormData(prev => ({ ...prev, everMarried: e.target.value as any }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        everMarried: e.target.value as any,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="Yes">Yes</option>
@@ -241,7 +270,9 @@ const UserForm: React.FC = () => {
 
             {/* Lifestyle Information */}
             <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Lifestyle Information</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Lifestyle Information
+              </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -249,7 +280,12 @@ const UserForm: React.FC = () => {
                   </label>
                   <select
                     value={formData.workType}
-                    onChange={(e) => setFormData(prev => ({ ...prev, workType: e.target.value as any }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        workType: e.target.value as any,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="Private">Private</option>
@@ -266,7 +302,12 @@ const UserForm: React.FC = () => {
                   </label>
                   <select
                     value={formData.residenceType}
-                    onChange={(e) => setFormData(prev => ({ ...prev, residenceType: e.target.value as any }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        residenceType: e.target.value as any,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="Urban">Urban</option>
@@ -280,7 +321,12 @@ const UserForm: React.FC = () => {
                   </label>
                   <select
                     value={formData.smokingStatus}
-                    onChange={(e) => setFormData(prev => ({ ...prev, smokingStatus: e.target.value as any }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        smokingStatus: e.target.value as any,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="never smoked">Never Smoked</option>
@@ -294,7 +340,9 @@ const UserForm: React.FC = () => {
 
             {/* Health Metrics */}
             <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Health Metrics</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Health Metrics
+              </h3>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -306,7 +354,12 @@ const UserForm: React.FC = () => {
                     min="80"
                     max="200"
                     value={formData.systolic}
-                    onChange={(e) => setFormData(prev => ({ ...prev, systolic: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        systolic: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="120"
                   />
@@ -322,7 +375,12 @@ const UserForm: React.FC = () => {
                     min="40"
                     max="120"
                     value={formData.diastolic}
-                    onChange={(e) => setFormData(prev => ({ ...prev, diastolic: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        diastolic: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="80"
                   />
@@ -339,7 +397,12 @@ const UserForm: React.FC = () => {
                     max="400"
                     step="0.1"
                     value={formData.avgGlucoseLevel}
-                    onChange={(e) => setFormData(prev => ({ ...prev, avgGlucoseLevel: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        avgGlucoseLevel: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="100.0"
                   />
@@ -356,7 +419,9 @@ const UserForm: React.FC = () => {
                     max="60"
                     step="0.1"
                     value={formData.bmi}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bmi: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, bmi: e.target.value }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="25.0"
                   />
@@ -372,7 +437,12 @@ const UserForm: React.FC = () => {
                     min="100"
                     max="400"
                     value={formData.cholesterol}
-                    onChange={(e) => setFormData(prev => ({ ...prev, cholesterol: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        cholesterol: e.target.value,
+                      }))
+                    }
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="200"
                   />
@@ -382,7 +452,9 @@ const UserForm: React.FC = () => {
 
             {/* Health Conditions */}
             <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Known Health Conditions</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Known Health Conditions
+              </h3>
               <div className="grid md:grid-cols-2 gap-3">
                 {heartConditions.map((condition) => (
                   <label
@@ -420,3 +492,4 @@ const UserForm: React.FC = () => {
 };
 
 export default UserForm;
+
