@@ -1,35 +1,35 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { TeamMember } from '../types';
+import React from "react";
+import { motion } from "framer-motion";
+import { TeamMember } from "../types";
 
 const TeamSection: React.FC = () => {
   const teamMembers: TeamMember[] = [
     {
-      name: "Dr. Sarah Chen",
-      role: "Lead Cardiologist",
-      image: "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop"
+      name: "Dhruv Sharma",
+      role: "Machine Learning",
+      image: "../../assets/dhruv.jpeg",
     },
     {
-      name: "Michael Rodriguez",
-      role: "Data Scientist",
-      image: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop"
+      name: "Chaitanya Shahare",
+      role: "Frontend Developer",
+      image: "../../assets/chaitanya.jpeg",
     },
     {
-      name: "Dr. Emily Watson",
-      role: "Clinical Researcher",
-      image: "https://images.pexels.com/photos/5327921/pexels-photo-5327921.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop"
+      name: "Anurag Verma",
+      role: "Backend Developer",
+      image: "../../assets/anurag.jpeg",
     },
     {
-      name: "James Park",
-      role: "Software Engineer",
-      image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop"
-    }
+      name: "Himanshu Bisht",
+      role: "Frontend Developer",
+      image: "../../assets/himanshu.jpeg",
+    },
   ];
 
   const supervisor: TeamMember = {
-    name: "Prof. David Thompson",
+    name: "Dr. M. Hanief",
     role: "Project Supervisor",
-    image: "https://images.pexels.com/photos/5327656/pexels-photo-5327656.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop"
+    image: "../../assets/dr-m-hanief.png",
   };
 
   return (
@@ -44,7 +44,8 @@ const TeamSection: React.FC = () => {
           Meet Our Team
         </h2>
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-          Our dedicated team of healthcare professionals and technology experts working to advance heart health monitoring
+          Our dedicated team of healthcare professionals and technology experts
+          working to advance heart health monitoring
         </p>
       </motion.div>
 
@@ -110,3 +111,4 @@ const TeamSection: React.FC = () => {
 };
 
 export default TeamSection;
+
