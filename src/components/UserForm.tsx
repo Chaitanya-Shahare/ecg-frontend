@@ -105,6 +105,7 @@ const UserForm: React.FC = () => {
       // Call the prediction API
       const apiResponse = await predictHealth(userData);
       const healthMetrics = generateMockHealthData(userData, apiResponse);
+      console.log("Health Metrics:",healthMetrics);
       
       // Store in localStorage for session persistence
       localStorage.setItem('userData', JSON.stringify(userData));
