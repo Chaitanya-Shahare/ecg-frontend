@@ -1,6 +1,6 @@
 import { UserData, APIRequest } from "../types";
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "https://curves-finds-defined-uniprotkb.trycloudflare.com";
 
 export const predictHealth = async (userData: UserData): Promise<any> => {
   const apiRequest: APIRequest = {
@@ -46,4 +46,3 @@ export const predictHealth = async (userData: UserData): Promise<any> => {
     };
   }
 };
-
